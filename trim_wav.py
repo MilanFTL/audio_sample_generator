@@ -14,7 +14,7 @@ def trim_wav(input_file, output_file, duration=30):
                 output_params = params._replace(nframes=num_frames)
                 output_wav.setparams(output_params)
                 
-                audio_data = np.frombuffer(input_wav.readframes(num_frames), dtype=np.int16)
+                audio_data = np.frombuffer(input_wav.readframes(num_frames), dtype=np.int16).copy()  # Create a copy of the array
                 
                 # Create a one-second fade-out envelope
                 fade_out = np.linspace(1, 0, framerate)
@@ -27,6 +27,7 @@ def trim_wav(input_file, output_file, duration=30):
         print(f"Trimmed {input_file} to {output_file} successfully.")
     except Exception as e:
         print(f"An error occurred: {str(e)}")
+
 
 
 if __name__ == "__main__":
