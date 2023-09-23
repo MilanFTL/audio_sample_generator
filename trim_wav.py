@@ -14,7 +14,7 @@ def trim_wav(input_file, output_file, duration=30):
                 output_params = params._replace(nframes=num_frames)
                 output_wav.setparams(output_params)
                 
-                audio_data = np.frombuffer(input_wav.readframes(num_frames), dtype=np.int16).copy()  # Create a copy of the array
+                audio_data = np.frombuffer(input_wav.readframes(num_frames), dtype=np.int32).copy()  # Read as 32-bit integers
                 
                 # Convert the audio data to float64
                 audio_data = audio_data.astype(np.float64)
@@ -25,8 +25,8 @@ def trim_wav(input_file, output_file, duration=30):
                 # Apply the fade-out envelope to the last second of the audio data
                 audio_data[-framerate:] *= fade_out
                 
-                # Convert the audio data back to int16
-                audio_data = audio_data.astype(np.int16)
+                # Convert the audio data back to int32
+                audio_data = audio_data.astype(np.int32)
                 
                 output_wav.writeframes(audio_data.tobytes())
                 
