@@ -1,38 +1,14 @@
 import wave
 import numpy as np
 import os
+from pydub import AudioSegment
 
-def trim_wav(input_file, output_file, duration=30):
-    try:
-        with wave.open(input_file, 'rb') as input_wav:
-            params = input_wav.getparams()
-            sample_width = params.sampwidth
-            framerate = params.framerate
-            num_frames = int(framerate * duration)
-            
-            with wave.open(output_file, 'wb') as output_wav:
-                output_params = params._replace(nframes=num_frames)
-                output_wav.setparams(output_params)
-                
-                audio_data = np.frombuffer(input_wav.readframes(num_frames), dtype=np.int32).copy()  # Read as 32-bit integers
-                
-                # Convert the audio data to float64
-                audio_data = audio_data.astype(np.float64)
-                
-                # Create a one-second fade-out envelope
-                fade_out = np.linspace(1, 0, framerate)
-                
-                # Apply the fade-out envelope to the last second of the audio data
-                audio_data[-framerate:] *= fade_out
-                
-                # Convert the audio data back to int32
-                audio_data = audio_data.astype(np.int32)
-                
-                output_wav.writeframes(audio_data.tobytes())
-                
-        print(f"Trimmed {input_file} to {output_file} successfully.")
-    except Exception as e:
-        print(f"An error occurred: {str(e)}")
+
+def crop_and_fade_out(input_file, output_file, duration=30000, fade_duration=2000):
+    audio = AudioSegment.from_file(input_file)
+    cropped_audio = audio[:duration]
+    faded_audio = cropped_audio.fade_out(fade_duration)
+    faded_audio.export(output_file, format="wav")
 
 
 
@@ -45,4 +21,4 @@ if __name__ == "__main__":
         input_file_path = os.path.join(original_tracks_path, filename)
         output_file_path = os.path.join(trimmed_tracks_path, filename)
 
-        trim_wav(input_file_path, output_file_path)
+        crop_and_fade_out(input_file_path, output_file_path)
