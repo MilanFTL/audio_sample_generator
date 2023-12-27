@@ -2,12 +2,23 @@ import wave
 import numpy as np
 import os
 from pydub import AudioSegment
+import platform
 
 ffmpeg_executable = 'C:\\ffmpeg\\bin\\ffmpeg.exe'
 
 
-# Set the FFmpeg executable path for pydub
-AudioSegment.converter = ffmpeg_executable
+# Determine the operating system
+system = platform.system()
+if system == "Windows":
+    # Replace this path with the correct path to ffmpeg.exe on Windows
+    ffmpeg_path = r'C:\path\to\ffmpeg.exe'
+elif system == "Darwin":  # macOS
+    ffmpeg_path = '/usr/local/bin/ffmpeg'
+else:  # Linux
+    ffmpeg_path = '/usr/bin/ffmpeg'
+
+# Set the ffmpeg path
+AudioSegment.converter = ffmpeg_path
 
 def crop_and_fade_out(input_file, output_file, start_time=0, end_time=30, fade_duration=2):
     audio = AudioSegment.from_file(input_file)
