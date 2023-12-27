@@ -13,7 +13,7 @@ if system == "Windows":
     # Replace this path with the correct path to ffmpeg.exe on Windows
     ffmpeg_path = r'C:\path\to\ffmpeg.exe'
 elif system == "Darwin":  # macOS
-    ffmpeg_path = '/usr/local/bin/ffmpeg'
+    ffmpeg_path = '/opt/homebrew/bin/ffmpeg'
 else:  # Linux
     ffmpeg_path = '/usr/bin/ffmpeg'
 
